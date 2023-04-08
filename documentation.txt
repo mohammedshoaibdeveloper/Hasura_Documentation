@@ -65,11 +65,49 @@ Run hasura as a docker container
 Hasura console overview
 Create tables in hasura database manager
 first graphql query in database
+
 Data sorting
+
+order by(created at) desc
+order by(updated at) desc
+distinict(remove duplicates)
+distinict(created at)
+
 Data filtering
+
+where
+and
+or
+not
+created eq
+created neq
+created gt
+created gte
+created lte
+
+id eq
+id in ["id1","id2"]
+id nin ["id1","id2"]
+id is_null
+
+
 Full text searching
+where _like %third% agr sirf %first mn lgae ge to first letter k hisab se dekhega
+where _nilike "%(first|second)%"
+where _similar "%(first|second)%"
+
 Combine multiple filters
+where > and >  photo_url is_null false or created at gt date
+where > or > id is_null false or created at gt
+where > or > created at gt description _ilike
+
+
 pagination
+
+limit 2
+offset 2 for page
+
+offset = page num -1 * limit
 
 
 
