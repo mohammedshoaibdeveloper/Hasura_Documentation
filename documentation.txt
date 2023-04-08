@@ -59,21 +59,21 @@ volumes:
 
 3.docker-compose up
 
-hasura cloud changes
-start hasura in hasura cloud
-Run hasura as a docker container
-Hasura console overview
-Create tables in hasura database manager
-first graphql query in database
+*hasura cloud changes
+*start hasura in hasura cloud
+*Run hasura as a docker container
+*Hasura console overview
+*Create tables in hasura database manager
+*first graphql query in database
 
-Data sorting
+*Data sorting
 
 order by(created at) desc
 order by(updated at) desc
 distinict(remove duplicates)
 distinict(created at)
 
-Data filtering
+*Data filtering
 
 where
 and
@@ -91,30 +91,220 @@ id nin ["id1","id2"]
 id is_null
 
 
-Full text searching
+*Full text searching
+
 where _like %third% agr sirf %first mn lgae ge to first letter k hisab se dekhega
 where _nilike "%(first|second)%"
 where _similar "%(first|second)%"
 
-Combine multiple filters
+*Combine multiple filters
+
 where > and >  photo_url is_null false or created at gt date
 where > or > id is_null false or created at gt
 where > or > created at gt description _ilike
 
 
-pagination
+*pagination
 
 limit 2
 offset 2 for page
 
 offset = page num -1 * limit
 
+*Relations between database tables
+
+create new table name as comments and make relationship
+
+goto phots tables go to relationship add
+
+add data to comments
+
+set limit in comments
+
+get query:
+
+query GetPhotos {
+  photos {
+    id
+    photo_url
+    created_at
+    description
+    comments(limit: 1) {
+      id
+      comment
+      created_at
+    }
+  }
+}
+
+################################################ mutations ##############################################################
+
+*Mutations Create an item
+
+go to left explrer select mutation and select insert photos one also select the id photo url description created at
 
 
+mutation insertPhotos {
+  insert_photos_one(object: {photo_url: "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", description: "this is fourth phots"}) {
+    id
+    photo_url
+    description
+    created_at
+  }
+}
+
+or agr uniqure id krna chah rhe ho to contrainit select kro
+agr ap naya record add krte we srf 1 filed update krna chah rhe ho to on_conflict mn field select krlo
+
+mutation insertPhotos {
+  insert_photos_one(object: {id: "42b8c9cc-1ac9-4c4e-8e44-782839567ad1", photo_url: "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", description: "this is fourth phots"}, on_conflict: {constraint: phots_pkey, update_columns: photo_url}) {
+    id
+    photo_url
+    description
+    created_at
+  }
+}
+
+agr app multiple krna chah rhe ho to insert photos kro uske bad returning values select kro or affected rows bhi
+
+mutation insertPhotos {
+  insert_photos(objects: {photo_url: "https://images.pexels.com/photos/674010", description: "this is fourth phots"}) {
+    returning {
+      id
+      photo_url
+      description
+      created_at
+    }
+    affected_rows
+  }
+}
 
 
+updated query:
+
+object mn array mn objects pass honge
+
+mutation insertPhotos {
+  insert_photos(objects: [{photo_url: "https://images.pexels.com/photos/674010", description: "this is fourth phots"},{photo_url: "https://images.pexels.com/photos/674010", description: "this is fourth phots"}]) {
+    returning {
+      id
+      photo_url
+      description
+      created_at
+    }
+    affected_rows
+  }
+}
+
+*Update an item
+
+update krne k 2 methods hn bulk update y single update by primary key
+
+update by primary key
+
+create new mutation
+
+place id and click on set 
+
+also select returning field
+
+mutation MyMutation2 {
+  update_photos_by_pk(pk_columns: {id: "fb8a0ea0-6081-4981-85d1-9c6cb87c9506"}, _set: {description: "hello world"}) {
+    id
+    description
+  }
+}
+
+agr bulk update krna hy to select krn update_photos ko
+
+or field select krn jsko update krna hy  or where se criteria select krn like i am select date and also select affected rows and returning values
+
+mutation MyMutation2 {
+  update_photos(where: {created_at: {_gt: "2023-04-07T21:27:52.66262+00:00"}}, _set: {description: "Hello photos"}) {
+    affected_rows
+    returning {
+      id
+      description
+      created_at
+    }
+  }
+}
 
 
+*Delete an item
+
+delete krne k 2 methods hn bulk update y single update by primary key
+
+select delete photos by id and returning values
+
+agr multiple delete  krna hy to delete photos select kro or condition btado field k hisab se or returning values or affected rows select kro
+
+
+* mutable items with relations
+
+select insert photos one
+
+description
+photo url
+
+also select objects under comments
+returning values
+id,created,comment
+
+mutation InsertphotowithComments {
+  insert_photos_one(object: {description: "this is code", photo_url: "https://images.pexels.com/photos/674010", comments: {data: {comment: "this is comment"}}}) {
+    id
+    description
+    comments {
+      id
+      comment
+      created_at
+    }
+  }
+}
+
+
+*How to use variables in graphql queries,mutations and subscription
+
+in query variable bottom 
+
+{
+  "photo_url":"https://images.pexels.com",
+  "description":"desc"
+}
+
+
+graphql query:
+
+mutation insertPhotos($photo_url:String!,$description:String!) {
+  insert_photos_one(object: 
+    {photo_url: $photo_url,
+    description: $description,
+    })
+  {
+    id
+    photo_url
+    description
+    created_at
+  }
+}
+
+
+###### ($photo_url:String!,$description:description!) 
+
+*Real time queries
+
+subscription GetPhotos {
+  photos {
+    id
+    photo_url
+    created_at
+    description
+  }
+}
+
+
+agr real time query use krni hy to subscription lgega mutation ki jga jese app add kroge without call qury data aajaega
 
 
 
